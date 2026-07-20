@@ -248,9 +248,17 @@ app.get(/^\/(?!api).*/, (req, res, next) => {
 });
 
 const PORT = process.env.PORT || 4000;
-await seedDemoData();
-app.listen(PORT, () => {
+const seeded = await seedDemoData();
+const server = app.listen(PORT, () => {
   console.log(`Review Pulse API running on http://localhost:${PORT}`);
   console.log(`Demo login: demo@reviewpulse.app / demo1234`);
+  console.log(seeded ? "Database: seeded fresh demo data into server/db.json" : "Database: loaded server/db.json");
   console.log(process.env.OPENAI_API_KEY ? "OpenAI: enabled" : "OpenAI: not configured — using local mock AI");
+});
+
+server.on("error", (err) => {
+  if (err.code !== "EADDRINUSE") throw err;
+  console.error(`\nPort ${PORT} is already in use — the server is probably running in another terminal.`);
+  console.error(`Open http://localhost:${PORT}, or stop the old one with:  lsof -ti:${PORT} | xargs kill\n`);
+  process.exit(1);
 });

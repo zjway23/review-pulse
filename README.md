@@ -19,10 +19,27 @@ Open http://localhost:4000 and log in with the demo account:
 - **Email:** `demo@reviewpulse.app`
 - **Password:** `demo1234`
 
-The demo account is seeded with ~35 reviews across 90 days so the dashboard,
-themes, and trend alerts have data immediately. Or sign up for a fresh account
-and import your own CSV (columns: `reviewerName, reviewText, starRating,
-reviewDate, platformSource`).
+**Use the demo account for testing.** It is seeded with 54 reviews across 90
+days — every star rating 1–5, five platforms, and three already-approved
+responses — so the dashboard, filters, themes, and trend alerts all have data
+immediately. A newly registered account starts empty by design (each account
+only ever sees its own business's data), so if the app looks blank, check which
+account you are logged into.
+
+You can also sign up fresh and import your own CSV (columns: `reviewerName,
+reviewText, starRating, reviewDate, platformSource`).
+
+### The database
+
+Data lives in `server/db.json`, written automatically as you use the app —
+imported reviews, approved responses, and settings all survive a restart. The
+file is gitignored, so a fresh clone seeds itself on first run.
+
+To start over from clean demo data, delete it and restart:
+
+```bash
+rm server/db.json && npm run dev
+```
 
 ### Frontend development (hot reload)
 
@@ -45,7 +62,7 @@ npm run client   # terminal 2 — Vite dev server on :5173, proxies /api to :400
 
 | Piece | Now | Later |
 |---|---|---|
-| Database | In-memory arrays shaped like the SDD schema (data resets on restart) | PostgreSQL — reimplement the functions in `server/store.js` with SQL; nothing else changes |
+| Database | JSON file (`server/db.json`) holding the SDD's tables; data survives restarts | PostgreSQL — reimplement the functions in `server/store.js` with SQL; nothing else changes |
 | Auth | Local email/password with in-memory sessions + 5-strike lockout | Firebase Auth — replace register/login and the `requireAuth` middleware in `server/index.js` |
 | AI | Keyword-rule sentiment/themes + template responses (works offline) | Set `OPENAI_API_KEY` in `.env` — `server/ai.js` already calls OpenAI when the key is present and falls back to the mock on API errors |
 

@@ -1,5 +1,7 @@
 node_modules/
 client/dist/
+server/db.json
+server/db.json.tmp
 .env
 .DS_Store
 *.log
